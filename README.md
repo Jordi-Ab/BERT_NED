@@ -1,5 +1,5 @@
 # bert_ned
-Named Entity Disambiguation by training a BERT binary classification model.
+## Named Entity Disambiguation by training a BERT binary classification model.
 
 The task that we will be trying to train BERT to solve is "Named Entity Dissambiguation". Namely, given an entity and different options of possible entities, and given the context of which the entity is being mentioned, which of the options in the context referring to?
 
@@ -24,36 +24,35 @@ This project approaches the task as a binary classification problem. The trainin
 
 For example, in this Jaguar example, the Data Set would look like:
 ```
-]
-    }
-    "bert_qry": "Is 'Jaguar' in the context of: 'The man saw a Jaguar speed in the highway', referring to [SEP] Jaguar as an animal?",
-    "label": 0,
+[
+    {
+        "bert_qry": "Is 'Jaguar' in the context of: 'The man saw a Jaguar speed in the highway', referring to [SEP] Jaguar as an animal?",
+        "label": 0,
     },
-}
-    "bert_qry": "Is 'Jaguar' in the context of: 'The man saw a Jaguar speed in the highway', referring to [SEP] Jaguar as a brand of cars?",
-    "label": 1,
+    {
+        "bert_qry": "Is 'Jaguar' in the context of: 'The man saw a Jaguar speed in the highway', referring to [SEP] Jaguar as a brand of cars?",
+        "label": 1,
     },
-}
-    "bert_qry": "Is 'Jaguar' in the context of: 'The man saw a Jaguar speed in the highway', referring to [SEP] Jaguar as a supercomputer?",
-    "label": 0,
+    {
+        "bert_qry": "Is 'Jaguar' in the context of: 'The man saw a Jaguar speed in the highway', referring to [SEP] Jaguar as a supercomputer?",
+        "label": 0,
     },
-}
-    "bert_qry": "Is 'Jaguar' in the context of: 'The prey saw the jaguar cross the jungle', referring to [SEP] Jaguar as an animal?",
-    "label": 1,
+    {
+        "bert_qry": "Is 'Jaguar' in the context of: 'The prey saw the jaguar cross the jungle', referring to [SEP] Jaguar as an animal?",
+        "label": 1,
     },
-}
-    "bert_qry": "Is 'Jaguar' in the context of: 'The prey saw the jaguar cross the jungle', referring to [SEP] Jaguar as a brand of cars?",
-    "label": 0,
+    {
+        "bert_qry": "Is 'Jaguar' in the context of: 'The prey saw the jaguar cross the jungle', referring to [SEP] Jaguar as a brand of cars?",
+        "label": 0,
     },
-}
-    "bert_qry": "Is 'Jaguar' in the context of: 'The prey saw the jaguar cross the jungle', referring to [SEP] Jaguar as a supercomputer?",
-    "label": 0,
+    {
+        "bert_qry": "Is 'Jaguar' in the context of: 'The prey saw the jaguar cross the jungle', referring to [SEP] Jaguar as a supercomputer?",
+        "label": 0
     }
 ]
 ```
 
-
-Notebooks description:
+## Notebooks description:
 - `0-ask_stable_beluga.ipynb` -> Create the teacher observations by triggering `StableBeluga-7B`.
 - `1-make_dataset.ipynb` -> Pre process Data set to make it available for BERT fine tunning.
 - `2-fine_tune_bert.ipynb` -> performs the Training phase of the BERT model.
@@ -62,3 +61,25 @@ Notebooks description:
 The objective of fine tuning BERT is to have a lightweight model that can dismabiguate as good as Stable Belgua 7B (We don't need the whole power of an LLM if we are only performing a single task).
 
 My NED model achieved an 86% accuracy against the teacher disambiguation abservations, it performs the disambiguation 3x faster that `Stable Beluga` does on a 4090 GPU and uses 3x less GPU memory than `Stable Beluga` LLM.
+
+## Model Usage: 
+
+Model card is in Hugging Face: https://huggingface.co/JordiAb/BERT_NED
+
+**Note:** DataSets and the resulting fine tuned model are not uploaded to Github due to size constraints.
+
+Resulting Model can be downloaded from Hugging Face with:
+
+```
+from transformers import BertTokenizer, BertForSequenceClassification
+
+# load the BERT NED model
+model = BertForSequenceClassification.from_pretrained(
+  'JordiAb/BERT_NED'
+).eval()
+# load the BERT NED tokenizer
+tokenizer = BertTokenizer.from_pretrained(
+  'JordiAb/BERT_NED'
+)
+```
+
